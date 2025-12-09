@@ -26,13 +26,12 @@ void searchStudent();
 void updateStudent();
 void deleteStudent();
 
-
 /* ---------------------------------------------------------
    MAIN FUNCTION
 --------------------------------------------------------- */
 int main() {
 
-    createCredentials();   // Create login credentials if user wants
+    createCredentials();   // Create login credentials if needed
 
     if (loginSystem()) {
         mainMenu();
@@ -44,7 +43,7 @@ int main() {
 
 
 /* ---------------------------------------------------------
-   ASK USER TO CREATE CREDENTIAL FILE
+   CREATE CREDENTIAL FILE IF USER WANTS
 --------------------------------------------------------- */
 void createCredentials() {
     char choice;
@@ -171,14 +170,16 @@ void userMenu() {
         printf("\n===== USER MENU =====\n");
         printf("1. Display Students\n");
         printf("2. Search Student\n");
-        printf("3. Logout\n");
+        printf("3. Add Student\n");   // FIXED
+        printf("4. Logout\n");
         printf("Enter choice: ");
         scanf("%d", &ch);
 
         switch (ch) {
             case 1: displayStudents(); break;
             case 2: searchStudent(); break;
-            case 3: return;
+            case 3: addStudent(); break;   // FIXED
+            case 4: return;
             default: printf("Invalid choice!\n");
         }
     } while (1);
@@ -192,11 +193,16 @@ void addStudent() {
     struct student st;
     FILE *fp = fopen(STUDENT_FILE, "a");
 
+    if (!fp) {
+        printf("Error opening file!\n");
+        return;
+    }
+
     printf("Enter roll number: ");
     scanf("%d", &st.roll);
 
-    printf("Enter name: ");
-    scanf("%s", st.name);
+    printf("Enter full name: ");
+    scanf("%f", &st.name);
 
     printf("Enter marks: ");
     scanf("%f", &st.marks);
@@ -208,12 +214,18 @@ void addStudent() {
 }
 
 
+
 /* ---------------------------------------------------------
    DISPLAY STUDENTS
 --------------------------------------------------------- */
 void displayStudents() {
     struct student st;
     FILE *fp = fopen(STUDENT_FILE, "r");
+
+    if (!fp) {
+        printf("Error opening student file!\n");
+        return;
+    }
 
     printf("\nRoll\tName\tMarks\n");
     printf("-----------------------------\n");
